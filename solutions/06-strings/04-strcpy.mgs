@@ -1,0 +1,122 @@
+// Solution — Module 06, Exercise 04: Overrunning A Buffer
+//
+// Task 1: nothing faults. admin is 0 before the copy and 79 after it. No
+// error, no warning, exit code 0. The program is now wrong and does not know
+// it, which is the single most important thing in this module.
+//
+// Task 2: the dump is
+//
+//   0010  48 45 4c 4c  4f 00 00 00      |HELLO...|
+//         ^^^^^^^^^^^                   name: u8[4]
+//                      ^^^^^^^^^^^      admin: i32 = 79
+//
+// "HELLO" is H E L L O plus a terminator, six bytes. name holds four of them
+// (48 45 4c 4c — "HELL"). The O, hex 4f, decimal 79, lands at offset 4, which
+// layout() says is the first byte of admin. The terminator lands at offset 5,
+// also inside admin. So admin, an i32 that was 0, is now 79: the letter O,
+// sitting in the low byte, little-endian.
+//
+// Task 3: the arena tracks blocks, not fields. The whole Record is one
+// 8-byte garrison, and every byte strcpy wrote — offsets 0 through 5 — was
+// inside it. Nothing was violated at the level the arena polices. This is the
+// same rule Module 05 Exercise 02 ran into, and it is not a limitation of
+// crunch-c: it is what C's own allocator knows. malloc hands out blocks. The
+// field structure is a fiction the compiler maintains and nothing enforces at
+// runtime.
+//
+// Task 4: an attacker who controls the source string controls admin. Six
+// characters of input and the sixth one is a privilege flag. They do not need
+// to find a crash, guess an address, or defeat any mitigation — they need to
+// type a name that is too long. This is the shape of a large fraction of the
+// CVEs of the last thirty years, and the reason "just be careful with
+// strcpy" was never a workable answer.
+
+floorplan Record {
+    name: u8[4]
+    admin: i32
+}
+
+fn strcpy(dst, src) {
+    i = 0
+    while src[i] != 0 {
+        dst[i] = src[i]
+        i = i + 1
+    }
+    dst[i] = 0
+    return i
+}
+
+// A bounded copy: one that checks the destination's size, which means being
+// TOLD the size, because a pine cannot report it.
+//
+// Watch what this actually does when the source is too long. It does not
+// refuse the whole copy - it writes as much as fits, terminates it, and
+// returns -1. The destination ends up holding a valid but truncated string.
+// That is the correct behaviour and it is still a trap: if the caller ignores
+// the return value, the program silently continues with the wrong name.
+fn strcpy_max(dst, src, limit) {
+    i = 0
+    while src[i] != 0 {
+        if i + 1 >= limit {
+            return 0 - 1
+        }
+        dst[i] = src[i]
+        i = i + 1
+    }
+    dst[i] = 0
+    return i
+}
+
+src = garrison(6)
+src[0] = 72   // H
+src[1] = 69   // E
+src[2] = 76   // L
+src[3] = 76   // L
+src[4] = 79   // O
+src[5] = 0
+
+layout(Record)
+
+// Tasks 1 and 2: the unchecked copy.
+rec = garrison(Record)
+rec.admin = i32(0)
+print(f"admin before the copy: {rec.admin}")
+strcpy(rec, src)
+print("")
+bathysphere(rec)
+print(f"admin after the copy:  {rec.admin}")
+print("no fault, no warning, exit code 0 - and admin is now the letter O")
+scorch(rec)
+
+// The same copy, bounded by the size of the field.
+print("")
+safe = garrison(Record)
+safe.admin = i32(0)
+written = strcpy_max(safe, src, 4)
+bathysphere(safe)
+print(f"strcpy_max returned {written} (-1 means truncated), admin = {safe.admin}")
+print("admin is intact - but look at name: HEL and a terminator.")
+print("the copy did not refuse, it stopped. a partial string was written and")
+print("the ONLY signal that anything was lost is the return value.")
+scorch(safe)
+
+// BONUS: run off the end of the whole Record, not just past the field.
+//
+// This is the contrast that matters. Overrunning the FIELD is silent;
+// overrunning the BLOCK is caught. In C neither is caught, and the first one
+// is the one that ships.
+long = garrison(12)
+i = 0
+while i < 11 {
+    long[i] = 65 + i
+    i = i + 1
+}
+long[11] = 0
+
+scorch(src)
+
+print("")
+print("now copying 12 bytes into an 8-byte Record...")
+overflow = garrison(Record)
+strcpy(overflow, long)
+print("unreachable")

@@ -13,3 +13,6 @@ solutions/03-faults/01-quicksand.mgs           1
 solutions/03-faults/02-out-of-bounds.mgs       1
 solutions/03-faults/03-double-free.mgs         1
 solutions/05-advanced/02-arrays.mgs            1
+solutions/06-strings/02-strlen.mgs             1
+solutions/06-strings/03-off-by-one.mgs        1
+solutions/06-strings/04-strcpy.mgs            1

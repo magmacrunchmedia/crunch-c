@@ -1,0 +1,63 @@
+// Solution — Module 06, Exercise 01: A String Is Bytes Plus A Zero
+//
+// Task 1: the dump is
+//
+//   0008  48 49 00                    |HI.|
+//
+// 48 and 49 are H and I in hex (72 and 73 in decimal). The third byte is 00,
+// and the gutter shows '.' because byte 0 has no printable character. That
+// dot is the string's terminator, and it is the only thing in the block that
+// says where the text ends.
+//
+// Task 3: "CAT" needs FOUR bytes, not three. Three letters and the
+// terminator. If you allocated three you got the letters and nothing else —
+// which is Exercise 02's whole subject.
+//
+// Task 4: nothing looks wrong. That is the point worth carrying forward. A
+// block holding "CAT" with no terminator is indistinguishable, by inspection,
+// from a correct string; the bytes you wrote are all present and correct. The
+// damage only appears when something tries to find the end.
+
+// Task 2: a different two-letter word — "ON".
+s = garrison(3)
+s[0] = 79     // O
+s[1] = 78     // N
+s[2] = 0
+bathysphere(s)
+scorch(s)
+
+// Task 3: "CAT" — three letters plus the terminator is four bytes.
+print("")
+cat = garrison(4)
+cat[0] = 67   // C
+cat[1] = 65   // A
+cat[2] = 84   // T
+cat[3] = 0
+bathysphere(cat)
+scorch(cat)
+
+// Task 4: the same three letters with no room for a terminator.
+print("")
+truncated = garrison(3)
+truncated[0] = 67
+truncated[1] = 65
+truncated[2] = 84
+bathysphere(truncated)
+print("the letters are all correct, and this is not a string")
+scorch(truncated)
+
+// BONUS: unprintable bytes.
+//
+// 7 is BEL, 27 is ESC, 127 is DEL. None of them have a glyph, so bathysphere
+// shows a '.' for each — the same '.' it shows for the terminator. The gutter
+// tells you "not printable", not "zero", so you cannot find a terminator by
+// reading the ASCII column alone. Read the hex.
+print("")
+odd = garrison(4)
+odd[0] = 7
+odd[1] = 27
+odd[2] = 127
+odd[3] = 65   // A, for contrast
+bathysphere(odd)
+print("three unprintable bytes and one 'A' — only the hex distinguishes them")
+scorch(odd)

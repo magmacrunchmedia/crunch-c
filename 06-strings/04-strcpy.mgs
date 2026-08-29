@@ -1,0 +1,67 @@
+// Module 06, Exercise 04: Overrunning A Buffer
+//
+// This is the bug that made C famous.
+//
+//   struct Record { char name[4]; int admin; };
+//   strcpy(rec.name, "HELLO");   // 6 bytes into a 4-byte field
+//
+// strcpy copies until it reaches the source's terminator. It never looks at
+// the size of the destination, because it cannot — all it has is a pointer.
+// If the source is longer than the destination, it writes past the end and
+// keeps going, straight into whatever the struct put next.
+
+floorplan Record {
+    name: u8[4]
+    admin: i32
+}
+
+fn strcpy(dst, src) {
+    i = 0
+    while src[i] != 0 {
+        dst[i] = src[i]
+        i = i + 1
+    }
+    dst[i] = 0
+    return i
+}
+
+// "HELLO" — five characters and a terminator, six bytes.
+src = garrison(6)
+src[0] = 72   // H
+src[1] = 69   // E
+src[2] = 76   // L
+src[3] = 76   // L
+src[4] = 79   // O
+src[5] = 0
+
+// A record whose name field has room for three characters and a terminator.
+rec = garrison(Record)
+rec.admin = i32(0)
+
+layout(Record)
+print(f"admin before the copy: {rec.admin}")
+
+// Copy six bytes into a four-byte field.
+strcpy(rec, src)
+
+print("")
+bathysphere(rec)
+print(f"admin after the copy:  {rec.admin}")
+
+scorch(src)
+scorch(rec)
+
+// YOUR TASK:
+// 1. Run it. The program does not fault. Look at admin before and after.
+// 2. In the bathysphere dump, work out which bytes of "HELLO" landed in
+//    `name` and which landed in `admin`. Check against the layout() output.
+// 3. Why did the arena not stop this? (Module 05 Exercise 02 met the same
+//    rule: the arena guards the BLOCK boundary, not the field boundary.)
+// 4. `admin` is the kind of field that decides whether someone is an
+//    administrator. Describe, in one sentence, what an attacker who controls
+//    the source string can do here.
+
+// BONUS: make the source long enough to run off the end of the whole Record,
+// not just past the name field. That one the arena does catch — and the
+// difference between the two is the difference between a bug you find and a
+// bug you ship.

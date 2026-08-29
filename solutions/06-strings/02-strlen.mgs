@@ -1,0 +1,79 @@
+// Solution — Module 06, Exercise 02: strlen Without A Terminator
+//
+// Task 1: strlen(good) is 2. The block is three bytes; the string is two
+// characters. The terminator is stored but never counted, which is why
+// "how many bytes do I need" and "how long is the string" are different
+// questions with different answers, forever.
+//
+// Task 2: uncommenting strlen(bad) gives
+//
+//   area does not exist at line 18, column 11
+//     18 |     while p[n] != 0 {
+//   byte 2..2 is outside this pine's block, which covers 0..1
+//   Stack trace:
+//     strlen()
+//
+// The fault lands on the loop's own condition — the read that tests for the
+// terminator is the read that goes out of bounds. Note the stack trace names
+// strlen(), not the caller. In C the fault would also happen inside strlen,
+// which is a large part of why these bugs are hard to attribute: the function
+// that crashes is not the function that made the mistake.
+//
+// Task 3: byte 2. The block covers 0..1, so 2 is the first index past the
+// end. strlen read bytes 0 and 1, found 72 and 73, neither of them zero, and
+// asked for byte 2 — because that is all it can do. It has no size to check
+// against.
+//
+// Task 4: in real C, nothing stops it. strlen keeps reading past the block
+// into the heap: allocator metadata, other allocations, freed memory. It
+// returns when it happens to encounter a zero byte, so the answer is
+// whatever the neighbouring memory contains — 2, or 40, or 4000, and a
+// different number on the next run. What makes it stop is either a stray
+// zero or an unmapped page, and only the second one is a crash you would
+// notice. This is why an unterminated string is not a "short string" bug; it
+// is an unbounded read of memory you do not own.
+
+fn strlen(p) {
+    n = 0
+    while p[n] != 0 {
+        n = n + 1
+    }
+    return n
+}
+
+// Task 1: a properly terminated string.
+good = garrison(3)
+good[0] = 72
+good[1] = 73
+good[2] = 0
+
+bathysphere(good)
+print(f"strlen = {strlen(good)}")
+print(f"block is 3 bytes, string is {strlen(good)} characters")
+
+// The terminator is what makes length findable. Move it and the length
+// changes without a single letter being touched.
+print("")
+good[1] = 0
+bathysphere(good)
+print(f"same block, terminator moved to index 1 — strlen is now {strlen(good)}")
+
+// BONUS: `while (i < strlen(s))` re-walks the whole string on every
+// iteration, so a loop over an N-character string does N passes of N steps.
+// That is O(N^2) to do something that should be O(N), and it is invisible in
+// the source — the loop reads like any other. Hoist the strlen out.
+print("")
+print("strlen is a walk, not a lookup: calling it in a loop condition")
+print("re-walks the string every single iteration.")
+
+scorch(good)
+
+// Task 2 and 3: the unterminated block. Ends the program, so it goes last.
+bad = garrison(2)
+bad[0] = 72
+bad[1] = 73
+
+print("")
+bathysphere(bad)
+print("two letters, no terminator - now walking it with strlen...")
+print(f"unreachable: {strlen(bad)}")

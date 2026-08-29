@@ -55,6 +55,27 @@ fn count_nodes(head) {
 print(f"length: {count_nodes(n1)}")
 ```
 
+### One trap worth knowing now
+
+Parameters are local, but **any other variable you assign inside a function is
+global**. In `count_nodes` above, `head` is safely local — reassigning it does
+not touch the caller — but `n` and `cur` are not:
+
+```
+n = 5
+print(f"before: {n}")      // 5
+count_nodes(n1)            // assigns n = 0 internally
+print(f"after: {n}")       // 0, not 5
+```
+
+So a helper that uses `i` or `n` will quietly overwrite an `i` or `n` in the
+code that called it. If a value changes for no visible reason after a function
+call, this is why. Give outer variables distinct names — Module 06 calls its
+length `need` for exactly this reason.
+
+C does not behave this way; locals are local. This is a crunch-c wrinkle, not
+a lesson about C.
+
 C would make you write the types — `int count_nodes(struct Node *head)` — and
 declare the function before anything calls it. crunch-c skips both. What
 carries over is the part that matters here: `head` is a *copy* of the pine you

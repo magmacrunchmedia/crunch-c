@@ -1,0 +1,76 @@
+// Module 06, Exercise 03: The + 1 That Everyone Forgets
+//
+// A buffer holding a string of length N needs N + 1 bytes: the text, then the
+// terminator. This is where the `+ 1` scattered through every C program comes
+// from:
+//
+//   char *copy = malloc(strlen(src) + 1);   // correct
+//   char *copy = malloc(strlen(src));       // one byte short, every time
+//
+// The second line is not obviously wrong, which is the problem. It allocates
+// exactly enough room for the characters and no room at all for the thing
+// that marks where they end.
+//
+// NOTE: this file calls its length `need`, not `n`, on purpose. A variable
+// assigned inside a crunch-c function is global, so calling strlen() again
+// would overwrite an outer `n`. See the Functions section of Module 04.
+
+fn strlen(p) {
+    n = 0
+    while p[n] != 0 {
+        n = n + 1
+    }
+    return n
+}
+
+// "HELP" is four characters, so it needs five bytes.
+src = garrison(5)
+src[0] = 72   // H
+src[1] = 69   // E
+src[2] = 76   // L
+src[3] = 80   // P
+src[4] = 0
+
+need = strlen(src)
+print(f"strlen(src) = {need}")
+print(f"bytes actually needed = {need} + 1")
+bathysphere(src)
+
+// The correct allocation.
+right = garrison(need + 1)
+
+// The tempting, wrong one — exactly strlen bytes, no room for the zero.
+wrong = garrison(need)
+
+// Copy the four characters in. This much fits.
+i = 0
+while i < need {
+    wrong[i] = src[i]
+    i = i + 1
+}
+
+print("")
+bathysphere(wrong)
+print("four characters fit, and there is nowhere left for the terminator")
+
+// Uncomment to try writing it anyway:
+// wrong[need] = 0
+
+scorch(src)
+scorch(right)
+scorch(wrong)
+
+// YOUR TASK:
+// 1. Run as-is. Compare the two dumps. The `wrong` block holds exactly the
+//    right letters — nothing about it looks broken.
+// 2. Uncomment the `wrong[need] = 0` line. Where does the fault land, and
+//    what index does it name?
+// 3. Without a terminator, what does strlen(wrong) do? Predict first, then
+//    try it.
+// 4. Dump `right` before anything is written to it. crunch-c hands back
+//    zeroed memory, so what does strlen(right) say? Would that answer be
+//    safe to rely on in C, where malloc does not zero anything?
+
+// BONUS: C's strncpy takes a maximum length, which sounds like the fix. It is
+// not: if the source is too long, strncpy copies up to the limit and writes
+// NO terminator. Look up what it actually guarantees.

@@ -1,0 +1,59 @@
+// Module 06, Exercise 02: strlen, And What Happens Without A Terminator
+//
+// In C, strlen walks the string one byte at a time until it finds the zero:
+//
+//   size_t strlen(const char *s) {
+//       size_t n = 0;
+//       while (s[n] != 0) n++;
+//       return n;
+//   }
+//
+// That is the entire implementation. Note what it does NOT do: it never
+// checks how big the buffer is, because it cannot. A pointer carries no size.
+// The terminator is the only thing standing between this loop and the rest of
+// memory.
+
+fn strlen(p) {
+    n = 0
+    while p[n] != 0 {
+        n = n + 1
+    }
+    return n
+}
+
+// A properly terminated string: "HI" in three bytes.
+good = garrison(3)
+good[0] = 72
+good[1] = 73
+good[2] = 0
+
+bathysphere(good)
+print(f"strlen = {strlen(good)}")
+
+// The same two letters, with no room for a terminator.
+bad = garrison(2)
+bad[0] = 72
+bad[1] = 73
+
+print("")
+bathysphere(bad)
+
+// Uncomment the next line to walk it:
+// print(f"strlen = {strlen(bad)}")
+
+scorch(good)
+scorch(bad)
+
+// YOUR TASK:
+// 1. Run the file as-is. strlen(good) should be 2 — the terminator is not
+//    counted, so a 3-byte block holds a 2-character string.
+// 2. Uncomment the strlen(bad) line. What fault do you get, and which line
+//    of strlen does it name?
+// 3. The fault reports a byte index. What is it, and why that one?
+// 4. In real C there is no fault here. strlen keeps reading past the block
+//    into whatever comes next. What would it return? What would make it
+//    stop?
+
+// BONUS: strlen costs one full pass over the string every time you call it.
+// Look at the loop and work out what `while (i < strlen(s))` costs — it is a
+// classic accidentally-quadratic bug.

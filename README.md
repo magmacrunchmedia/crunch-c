@@ -13,6 +13,7 @@ Learn C memory management without segfaults.
 | 03 Faults | Use-after-free, out-of-bounds, leaks | `quicksand`, `area does not exist`, `ancient weeds` |
 | 04 Structs | Memory layout, padding, alignment | `floorplan`, `layout()`, `sizeof` |
 | 05 Advanced | Type casting, arrays, binary protocols | `osmosis()`, arrays in floorplans |
+| 06 Strings | NUL termination, strlen, buffer overruns | `u8[N]`, `bathysphere()` ASCII |
 
 ## Scope
 
@@ -23,8 +24,8 @@ with real understanding.
 
 It does not teach you to write and compile a C program. There is no `main()`,
 no `#include`, no compiler, no linker. Also deliberately out of scope for now:
-strings and NUL-termination, `calloc`/`realloc`, unions, bitwise operators, the
-preprocessor, and the stack (every allocation here is heap).
+`calloc`/`realloc`, unions, bitwise operators, the preprocessor, and the stack
+(every allocation here is heap).
 
 When you leave the sandbox, the arena's job is done by real tools, and they are
 worth meeting early:
@@ -37,6 +38,9 @@ worth meeting early:
   cannot rebuild.
 - **`-Wall -Wextra`** catches a surprising share of this before you run
   anything.
+- **`strlcpy`/`snprintf`** and their kin exist because the Module 06 functions
+  cannot be used safely. Reach for the bounded versions, and check what they
+  return.
 
 Every "spooked", "quicksand" and "ancient weeds" message in this course is
 something one of those four would have told you. The difference is that in C

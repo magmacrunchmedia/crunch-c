@@ -1,0 +1,84 @@
+// Solution — Module 06, Exercise 03: The + 1
+//
+// Task 1: the two dumps are
+//
+//   0008  48 45 4c 50  00      |HELP.|     <- src, 5 bytes, correct
+//   0010  48 45 4c 50          |HELP|      <- wrong, 4 bytes, not a string
+//
+// Every letter in `wrong` is correct. The copy loop did exactly what it was
+// asked. There is no corruption, no garbage, nothing to see in a debugger —
+// the block simply stops one byte before the thing that says it stopped.
+//
+// Task 2: uncommenting `wrong[need] = 0` gives
+//
+//   area does not exist at line 57, column 1
+//   byte 4..4 is outside this pine's block, which covers 0..3
+//
+// need is 4, the block covers 0..3, so index 4 is the first byte past the
+// end. The terminator has nowhere to go. That is what `malloc(strlen(s))`
+// buys you: a buffer that fits the text and cannot hold the string.
+//
+// Task 3: strlen(wrong) walks off the end and faults, exactly as in
+// Exercise 02 — it reads 0..3, finds no zero, and asks for byte 4. In C it
+// would keep going into the next allocation and return whatever it found.
+//
+// Task 4: this one has a trap in it.
+//
+// crunch-c zeroes every block it hands out, so a fresh `right` dumps as
+// 00 00 00 00 00 and strlen(right) is 0 — a valid empty string, by accident.
+// C's malloc guarantees nothing of the kind. It hands you whatever those
+// bytes last held, so the same code in C reads uninitialised memory and
+// returns a length that depends on the heap's history. (calloc zeroes; malloc
+// does not, and the difference is exactly this bug.)
+//
+// So: being correctly sized and being initialised are two separate problems.
+// The + 1 solves the first. Only writing a terminator solves the second, and
+// crunch-c's zeroing is a courtesy you must not learn to depend on.
+
+fn strlen(p) {
+    n = 0
+    while p[n] != 0 {
+        n = n + 1
+    }
+    return n
+}
+
+src = garrison(5)
+src[0] = 72   // H
+src[1] = 69   // E
+src[2] = 76   // L
+src[3] = 80   // P
+src[4] = 0
+
+need = strlen(src)
+print(f"strlen(src) = {need}, so the buffer needs {need} + 1 = {need + 1} bytes")
+bathysphere(src)
+
+// Task 1: the wrong allocation, filled correctly.
+wrong = garrison(need)
+i = 0
+while i < need {
+    wrong[i] = src[i]
+    i = i + 1
+}
+print("")
+bathysphere(wrong)
+print("all four letters present, and it is still not a string")
+
+// Task 4: the right size, never written to.
+print("")
+right = garrison(need + 1)
+bathysphere(right)
+print(f"fresh block, zeroed by crunch-c - strlen says {strlen(right)}")
+print("in C that block would hold whatever was there before, and strlen")
+print("would return a number that depends on the heap's history.")
+
+scorch(src)
+scorch(right)
+
+// Task 2: the terminator that does not fit. Ends the program, so it goes
+// last.
+print("")
+print(f"now writing a terminator at index {need} of a {need}-byte block...")
+wrong[need] = 0
+print("unreachable")
