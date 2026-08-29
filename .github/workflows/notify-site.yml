@@ -1,0 +1,35 @@
+name: Notify site of lesson changes
+
+# The course pages at magmacrunch.com/ware/crunch-c/ are generated from the
+# .mgs exercises, the module READMEs and solutions/ in this repo. Nothing is
+# hand-copied, so the site only tracks this repo if something tells it to
+# re-read. That is this workflow.
+#
+# The website side (sync-crunch-c.yml) also runs on a weekly cron, so a missed
+# dispatch delays a lesson edit rather than losing it.
+#
+# Needs a WEBSITE_DISPATCH_TOKEN secret with contents: write on
+# magmacrunchmedia/magmacrunch.com — the same secret shape the magmascript
+# release workflow uses to dispatch its playground sync.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "0*/**.mgs"
+      - "0*/README.md"
+      - "solutions/**.mgs"
+      - "README.md"
+  workflow_dispatch:
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch lesson sync
+        run: |
+          curl -sS -f -X POST \
+            -H "Authorization: Bearer ${{ secrets.WEBSITE_DISPATCH_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/magmacrunchmedia/magmacrunch.com/dispatches \
+            -d '{"event_type":"crunch-c-update","client_payload":{"sha":"${{ github.sha }}"}}'

@@ -48,7 +48,24 @@ You learn what C does, and why it's dangerous, without the danger.
 
 ## Playground
 
-Try it in your browser: [crunch-c playground](#) (coming soon)
+Work through the whole course in your browser, no install required:
+**[magmacrunch.com/ware/crunch-c](https://magmacrunch.com/ware/crunch-c/)**
+
+Each lesson pairs the explanation with a live editor, so you can uncomment the
+dangerous lines and watch the fault land.
+
+## Solutions
+
+Every exercise has a worked answer under `solutions/`, mirroring the module
+layout:
+
+```bash
+magmascript solutions/03-faults/01-quicksand.mgs
+```
+
+Solutions for modules 02, 03 and 05 end by deliberately triggering the fault
+they teach, so they exit non-zero on purpose. That is the lesson, not a
+failure.
 
 ## License
 

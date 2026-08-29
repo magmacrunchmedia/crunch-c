@@ -8,3 +8,7 @@ dist/
 build/
 .venv/
 venv/
+
+# macOS AppleDouble sidecars, from syncing this repo through a Mac.
+._*
+.DS_Store
