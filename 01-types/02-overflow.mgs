@@ -1,0 +1,32 @@
+// Module 01, Exercise 02: Overflow and Wrapping
+//
+// In C, when an unsigned integer exceeds its maximum value,
+// it wraps around to zero. This is defined behavior for unsigned types,
+// but it's still a common source of bugs.
+//
+// In crunch-c, the wrap happens AND you get a warning.
+
+// A u8 wraps from 255 to 0.
+counter = u8(254)
+print(f"start: {counter}")
+
+counter = counter + u8(1)
+print(f"after +1: {counter}")  // What do you expect?
+
+counter = counter + u8(1)
+print(f"after +1 again: {counter}")
+
+// YOUR TASK:
+// 1. Run this file. What warning do you see?
+// 2. What happens when you add 1 to u8(255)?
+// 3. Create a loop that counts from u8(250) to u8(260).
+//    How many times does the spooked warning fire?
+
+// BONUS: Signed overflow
+// In C, signed integer overflow is undefined behavior.
+// In crunch-c, it wraps and warns.
+neg = i8(-128)
+print(f"i8 min: {neg}")
+
+neg = neg - i8(1)
+print(f"after -1: {neg}")  // What happens here?

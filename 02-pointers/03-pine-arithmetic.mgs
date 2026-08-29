@@ -1,0 +1,46 @@
+// Module 02, Exercise 03: Pointer Arithmetic
+//
+// In C, you can add to a pointer to move it forward:
+//   p + 1  moves forward by sizeof(type) bytes
+//
+// In crunch-c, pine arithmetic moves by 1 byte:
+//   p + 1  moves forward by 1 byte
+//
+// This is like char* arithmetic in C.
+
+// Allocate 8 bytes.
+p = garrison(8)
+
+// Write values at different offsets.
+p.poke(i32, 100)      // bytes 0-3
+(p + 4).poke(i32, 200) // bytes 4-7
+
+// Read from shifted positions.
+val1 = p.peek(i32)
+val2 = (p + 4).peek(i32)
+print(f"offset 0: {val1}")
+print(f"offset 4: {val2}")
+
+// YOUR TASK:
+// 1. Allocate 12 bytes.
+// 2. Write three i32 values at offsets 0, 4, and 8.
+// 3. Read them back using pointer arithmetic.
+// 4. What happens if you try to read at offset 10?
+//    (Hint: that's in the middle of an i32)
+
+// BONUS: Iterate through an array
+arr = garrison(16)
+// Write 4 i32 values: 10, 20, 30, 40
+i = 0
+while i < 4 {
+    (arr + i * 4).poke(i32, (i + 1) * 10)
+    i = i + 1
+}
+
+// Read them back
+i = 0
+while i < 4 {
+    val = (arr + i * 4).peek(i32)
+    print(f"arr[{i}] = {val}")
+    i = i + 1
+}

@@ -1,0 +1,27 @@
+// Module 04, Exercise 02: Visualizing Layout
+//
+// In C, you can use offsetof() to see where fields are.
+// In crunch-c, layout() shows you a complete picture:
+// offset, size, field name, type, and padding.
+
+// Define a struct with intentionally bad field ordering.
+floorplan Loose {
+    a: u8
+    b: i32
+    c: u8
+}
+
+// Show the layout.
+layout(Loose)
+
+// YOUR TASK:
+// 1. Run this file. What does the layout show?
+// 2. How many bytes of padding do you see?
+// 3. What is the total sizeof(Loose)?
+
+print(f"sizeof(Loose) = {sizeof(Loose)}")
+print(f"alignof(Loose) = {alignof(Loose)}")
+
+// In C, this struct wastes 6 bytes on padding.
+// That might not sound like much, but if you have
+// an array of 1 million Loose structs, you waste 6 MB.

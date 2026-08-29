@@ -1,0 +1,35 @@
+// Module 02, Exercise 02: Reading and Writing Memory
+//
+// In C, you dereference a pointer to read/write:
+//   *p = 42;        // write
+//   int val = *p;   // read
+//
+// In crunch-c:
+//   p.poke(i32, 42)   // write an i32
+//   val = p.peek(i32) // read an i32
+//
+// You can also access individual bytes with p[i].
+
+// Allocate 4 bytes and write an i32 to it.
+p = garrison(4)
+p.poke(i32, 42)
+print(f"wrote 42")
+
+// Read it back.
+val = p.peek(i32)
+print(f"read: {val}")
+
+// Write a different value.
+p.poke(i32, 999)
+val = p.peek(i32)
+print(f"read again: {val}")
+
+// Byte access — read individual bytes.
+byte_val = p[0]
+print(f"first byte: {byte_val}")
+
+// YOUR TASK:
+// 1. What is the first byte of the i32 value 42?
+// 2. Write i32(1000) and read back the first two bytes.
+//    What values do you get? (Hint: think about endianness)
+// 3. Allocate 8 bytes, write two i32 values, and read them back.

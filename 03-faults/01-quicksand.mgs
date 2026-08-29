@@ -1,0 +1,26 @@
+// Module 03, Exercise 01: Use-After-Free (Quicksand)
+//
+// In C, using a pointer after freeing it is undefined behavior.
+// The memory might still contain old data, or it might be reused.
+// This is called "use-after-free" and is a common security vulnerability.
+//
+// In crunch-c, it's called "quicksand" — you're standing on ground
+// that isn't there anymore.
+
+// Allocate and free memory.
+p = garrison(4)
+p.poke(i32, 42)
+scorch(p)
+
+// Now try to read the freed memory.
+// Uncomment the next line:
+// val = p.peek(i32)
+
+// YOUR TASK:
+// 1. Uncomment the line above. What error do you see?
+// 2. The error message should tell you WHERE the block was scorched.
+//    What line number does it reference?
+// 3. Try writing to freed memory (poke). Is the error the same?
+
+// In C, this would silently read garbage data or crash.
+// In crunch-c, you get a clear error with source location.

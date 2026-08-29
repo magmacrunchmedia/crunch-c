@@ -1,0 +1,38 @@
+// Module 02, Exercise 04: Freeing Memory
+//
+// In C, you free memory with free():
+//   free(p);
+//
+// After freeing, using the pointer is undefined behavior.
+// In crunch-c, you free with scorch():
+//   scorch(p)
+//
+// After scorching, the block is marked as freed.
+// Any attempt to read or write it triggers "quicksand."
+
+// Allocate and use memory.
+p = garrison(4)
+p.poke(i32, 42)
+print(f"before scorch: {p.peek(i32)}")
+
+// Free the memory.
+scorch(p)
+print(f"after scorch")
+
+// YOUR TASK:
+// 1. Run this file. What happens?
+// 2. Uncomment the line below. What error do you see?
+// val = p.peek(i32)
+
+// This is use-after-free — one of the most dangerous bugs in C.
+// In crunch-c, it's caught with "quicksand" instead of crashing.
+
+// BONUS: What about double-free?
+// Uncomment these lines to see what happens:
+// scorch(p)
+// scorch(p)
+
+// BONUS: Leak detection
+// Allocate memory and DON'T scorch it.
+// Run this file and look for "ancient weeds" warnings.
+// That's the arena telling you about memory you forgot to free.

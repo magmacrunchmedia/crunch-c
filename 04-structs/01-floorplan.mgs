@@ -1,0 +1,42 @@
+// Module 04, Exercise 01: Defining Structs
+//
+// In C, you define a struct like this:
+//   struct Point {
+//       int x;
+//       int y;
+//   };
+//
+// In crunch-c, you use floorplan:
+//   floorplan Point {
+//       x: i32
+//       y: i32
+//   }
+
+// Define a struct.
+floorplan Point {
+    x: i32
+    y: i32
+}
+
+// Create an instance.
+p = garrison(sizeof(Point))
+p.poke(Point.x, 10)
+p.poke(Point.y, 20)
+
+print(f"point: ({p.peek(Point.x)}, {p.peek(Point.y)})")
+
+// YOUR TASK:
+// 1. Run this file. What does it print?
+// 2. Define a floorplan called "Person" with fields:
+//    - name: u8[16]  (a fixed-size string)
+//    - age: u8
+// 3. Create a Person and set its age to 25.
+
+floorplan Person {
+    name: u8[16]
+    age: u8
+}
+
+person = garrison(sizeof(Person))
+person.poke(Person.age, u8(25))
+print(f"person age: {person.peek(Person.age)}")

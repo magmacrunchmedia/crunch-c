@@ -1,0 +1,27 @@
+// Module 03, Exercise 03: Double-Free
+//
+// In C, freeing the same pointer twice is undefined behavior.
+// The second free might corrupt the heap allocator's internal data.
+//
+// In crunch-c, it's called "quicksand" — same as use-after-free.
+// The error tells you about BOTH scorch locations.
+
+// Allocate and free.
+p = garrison(4)
+p.poke(i32, 42)
+scorch(p)
+
+// Try to free again.
+// Uncomment the next line:
+// scorch(p)
+
+// YOUR TASK:
+// 1. Uncomment the line above. What error do you see?
+// 2. Does it tell you about the FIRST scorch too?
+// 3. In C, double-free can cause crashes or security holes.
+//    In crunch-c, it's caught every time.
+
+// BONUS: What about triple-free? Uncomment these lines:
+// scorch(p)
+// scorch(p)
+// scorch(p)

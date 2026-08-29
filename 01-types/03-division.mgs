@@ -1,0 +1,31 @@
+// Module 01, Exercise 03: Truncating Division
+//
+// In C, integer division truncates toward zero:
+//   7 / 2 = 3   (not 3.5)
+//  -7 / 2 = -3  (not -4)
+//
+// Python floors toward negative infinity:
+//  -7 // 2 = -4
+//
+// crunch-c follows C: division truncates toward zero.
+
+// Positive division
+print(f"7 / 2 = {i32(7) / i32(2)}")
+
+// Negative division
+print(f"-7 / 2 = {i32(-7) / i32(2)}")
+
+// YOUR TASK:
+// 1. What is -7 / 2 in crunch-c? (Hint: it's not -4)
+// 2. What is 10 / 3?
+// 3. What is -10 / 3?
+// 4. Create two i32 variables and divide them.
+//    Check the result matches C behavior, not Python.
+
+a = i32(10)
+b = i32(3)
+print(f"{a} / {b} = {a / b}")
+
+c = i32(-10)
+d = i32(3)
+print(f"{c} / {d} = {c / d}")

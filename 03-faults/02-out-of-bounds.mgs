@@ -1,0 +1,30 @@
+// Module 03, Exercise 02: Out-of-Bounds (Area Does Not Exist)
+//
+// In C, reading past the end of an array is undefined behavior.
+// You might read garbage, or you might crash. The compiler assumes
+// it never happens.
+//
+// In crunch-c, it's called "area does not exist" — you're trying
+// to access memory that isn't part of your allocation.
+
+// Allocate 4 bytes (enough for one i32).
+p = garrison(4)
+p.poke(i32, 42)
+
+// Read within bounds — this works.
+val = p.peek(i32)
+print(f"within bounds: {val}")
+
+// Read one byte past the end — this is out of bounds.
+// Uncomment the next line:
+// val = p[4]
+
+// YOUR TASK:
+// 1. Uncomment the line above. What error do you see?
+// 2. The error should show the block's extent. What is it?
+// 3. What happens if you try p[100]?
+// 4. Allocate 8 bytes. What's the last valid byte index?
+
+// BONUS: In C, this is how buffer overflows happen.
+// Attackers exploit out-of-bounds reads to leak data,
+// and out-of-bounds writes to overwrite other memory.

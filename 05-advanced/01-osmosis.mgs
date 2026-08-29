@@ -1,0 +1,34 @@
+// Module 05, Exercise 01: Type Casting (Osmosis)
+//
+// In C, you cast between types with (type)value:
+//   int x = 42;
+//   char c = (char)x;   // truncate to 8 bits
+//   float f = (float)x; // convert to float
+//
+// In crunch-c, you use osmosis():
+//   x = i32(42)
+//   c = osmosis(x, u8)   // truncate to 8 bits
+//   f = osmosis(x, f32)  // convert to float
+
+// Start with a large value.
+big = i32(300)
+
+// Truncate to u8 (0-255).
+small = osmosis(big, u8)
+print(f"i32(300) -> u8: {small}")
+
+// Convert to float.
+flt = osmosis(big, f32)
+print(f"i32(300) -> f32: {flt}")
+
+// YOUR TASK:
+// 1. What is osmosis(i32(256), u8)? (Hint: wrapping)
+// 2. What is osmosis(i32(-1), u8)? (Hint: think about two's complement)
+// 3. What is osmosis(f32(3.14), i32)? (Hint: truncation)
+// 4. Why doesn't i32 + u8 work without osmosis?
+//    (Hint: C's implicit promotion rules)
+
+// BONUS: In C, casting between signed and unsigned is a
+// common source of bugs. Try:
+//   osmosis(i32(-1), u32)
+// What value do you get?

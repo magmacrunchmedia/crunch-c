@@ -1,0 +1,25 @@
+// Module 02, Exercise 01: Allocating Memory
+//
+// In C, you allocate memory with malloc():
+//   int *p = malloc(sizeof(int));
+//
+// In crunch-c, you allocate with garrison():
+//   p = garrison(4)    // 4 bytes, enough for an i32
+//
+// garrison returns a "pine" — a pointer to the allocated block.
+
+// Allocate 4 bytes (enough for one i32).
+p = garrison(4)
+print(f"allocated 4 bytes at some address")
+
+// Allocate 16 bytes (enough for 4 i32s).
+arr = garrison(16)
+print(f"allocated 16 bytes")
+
+// YOUR TASK:
+// 1. Run this file. What does it print?
+// 2. Allocate 8 bytes. What could that hold?
+// 3. Allocate 1 byte. What can you store in 1 byte?
+
+// HINT: The .arena command in the REPL shows all allocated blocks.
+// Try running this in the REPL and typing .arena after execution.

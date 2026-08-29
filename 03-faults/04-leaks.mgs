@@ -1,0 +1,30 @@
+// Module 03, Exercise 04: Memory Leaks (Ancient Weeds)
+//
+// In C, forgetting to free memory is a memory leak.
+// The memory is never reclaimed, and over time your program
+// uses more and more memory.
+//
+// In crunch-c, unfreed blocks are reported as "ancient weeds"
+// — they grow in the arena like weeds in a garden.
+
+// Allocate some memory and don't free it.
+p1 = garrison(4)
+p1.poke(i32, 42)
+
+// Allocate more and don't free it.
+p2 = garrison(8)
+p2.poke(i64, 999)
+
+// Free one of them.
+scorch(p1)
+
+// Leave p2 unfreed.
+
+// YOUR TASK:
+// 1. Run this file. What warnings do you see?
+// 2. The warnings should name the LINE where each unfreed block
+//    was allocated. What lines do you see?
+// 3. Free p2 and run again. Are the warnings gone?
+
+// In C, memory leaks are silent. Your program just gets slower
+// and uses more memory. In crunch-c, you hear about every one.

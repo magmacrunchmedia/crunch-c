@@ -1,0 +1,39 @@
+// Module 04, Exercise 03: Field Ordering and Packing
+//
+// In C, reordering struct fields can reduce padding.
+// Put the largest fields first, smallest last.
+//
+// This exercise compares two orderings of the same fields.
+
+floorplan Loose {
+    a: u8
+    b: i32
+    c: u8
+}
+
+floorplan Tight {
+    b: i32
+    a: u8
+    c: u8
+}
+
+print("=== Loose ordering ===")
+layout(Loose)
+print(f"sizeof(Loose) = {sizeof(Loose)}")
+
+print("")
+print("=== Tight ordering ===")
+layout(Tight)
+print(f"sizeof(Tight) = {sizeof(Tight)}")
+
+// YOUR TASK:
+// 1. Run this file. What's the size difference?
+// 2. Why is Tight smaller than Loose?
+// 3. Create a floorplan with fields: u8, u8, i32, u8
+//    What order minimizes padding?
+// 4. Create a floorplan with fields: i32, u8, i64, u8
+//    Try different orderings. Which is smallest?
+
+// In C, this is called "struct packing."
+// It matters for memory-efficient data structures,
+// network protocols, and file formats.
