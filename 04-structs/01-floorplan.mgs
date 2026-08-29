@@ -18,12 +18,16 @@ floorplan Point {
     y: i32
 }
 
-// Create an instance.
-p = garrison(sizeof(Point))
-p.poke(Point.x, 10)
-p.poke(Point.y, 20)
+// Create an instance. Pass the floorplan to garrison() — not a byte count.
+// The pine then knows what it points at, so fields have names instead of
+// offsets, the way p->x does in C.
+p = garrison(Point)
+p.x = i32(10)
+p.y = i32(20)
 
-print(f"point: ({p.peek(Point.x)}, {p.peek(Point.y)})")
+print(f"point: ({p.x}, {p.y})")
+
+scorch(p)
 
 // YOUR TASK:
 // 1. Run this file. What does it print?
@@ -37,6 +41,8 @@ floorplan Person {
     age: u8
 }
 
-person = garrison(sizeof(Person))
-person.poke(Person.age, u8(25))
-print(f"person age: {person.peek(Person.age)}")
+person = garrison(Person)
+person.age = u8(25)
+print(f"person age: {person.age}")
+
+scorch(person)

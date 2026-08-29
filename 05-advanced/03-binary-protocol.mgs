@@ -4,11 +4,15 @@
 // a header with fixed fields, followed by variable-length data.
 //
 // This exercise parses a simple binary protocol:
-//   - 2 bytes: magic number (0x4D47 = "MG")
+//   - 2 bytes: magic number (0x4D47 = "MG" = 19783 decimal)
 //   - 1 byte: version
 //   - 1 byte: flags
 //   - 4 bytes: payload length
 //   - N bytes: payload
+//
+// crunch-c has no hex literals, so the constants below are written in
+// decimal with the hex value in a comment. bathysphere() dumps the bytes
+// in hex, which is where you actually want to read them anyway.
 
 floorplan PacketHeader {
     magic: u16
@@ -17,29 +21,30 @@ floorplan PacketHeader {
     payload_len: u32
 }
 
-// Simulate a packet in memory.
-data = garrison(12)
+// Build a packet header in memory.
+header = garrison(PacketHeader)
 
-// Write the header.
-data.poke(PacketHeader.magic, u16(0x4D47))   // "MG"
-data.poke(PacketHeader.version, u8(1))
-data.poke(PacketHeader.flags, u8(0x0F))
-data.poke(PacketHeader.payload_len, u32(4))
+header.magic = u16(19783)      // 0x4D47, "MG"
+header.version = u8(1)
+header.flags = u8(15)          // 0x0F
+header.payload_len = u32(4)
 
 // Show the layout.
 layout(PacketHeader)
 print(f"header size: {sizeof(PacketHeader)}")
 
 // Parse the header back.
-magic = data.peek(PacketHeader.magic)
-version = data.peek(PacketHeader.version)
-flags = data.peek(PacketHeader.flags)
-payload_len = data.peek(PacketHeader.payload_len)
+print("")
+print(f"magic: {header.magic}")
+print(f"version: {header.version}")
+print(f"flags: {header.flags}")
+print(f"payload length: {header.payload_len}")
 
-print(f"magic: 0x{magic}")
-print(f"version: {version}")
-print(f"flags: 0x{flags}")
-print(f"payload length: {payload_len}")
+// The raw bytes, annotated field by field. Look for 47 4d — the magic number
+// stored little-endian, low byte first, which is why "MG" reads backwards.
+bathysphere(header)
+
+scorch(header)
 
 // YOUR TASK:
 // 1. Run this file. Does the round-trip work?
@@ -53,5 +58,7 @@ print(f"payload length: {payload_len}")
 //    - 2 bytes: data length
 //    - N bytes: data
 
-// BONUS: Use bathysphere() to dump the raw bytes
-// of the packet. Can you spot the header fields?
+// BONUS: Look at the bathysphere dump above. Can you find each header field?
+// This header has NO padding — 2 + 1 + 1 lands exactly on the 4-byte boundary
+// payload_len needs. Real protocols are designed that way on purpose. Add the
+// u8 checksum from task 2 and see what the layout does about it.

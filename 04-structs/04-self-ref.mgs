@@ -3,7 +3,8 @@
 // In C, a struct can contain a pointer to itself.
 // This is how linked lists, trees, and other data structures work.
 //
-// In crunch-c, you use pine[Self] to reference the current floorplan.
+// In crunch-c, a pine field names the floorplan it points at — including
+// its own, which is what makes a linked list possible.
 
 // Define a linked list node.
 floorplan Node {
@@ -11,30 +12,34 @@ floorplan Node {
     next: pine[Node]
 }
 
-// Create three nodes and link them.
-n1 = garrison(sizeof(Node))
-n1.poke(Node.value, 10)
-n1.poke(Node.next, none)  // no next node yet
+// Create three nodes.
+n1 = garrison(Node)
+n1.value = i32(10)
+n1.next = none        // no next node yet
 
-n2 = garrison(sizeof(Node))
-n2.poke(Node.value, 20)
-n2.poke(Node.next, none)
+n2 = garrison(Node)
+n2.value = i32(20)
+n2.next = none
 
-n3 = garrison(sizeof(Node))
-n3.poke(Node.value, 30)
-n3.poke(Node.next, none)
+n3 = garrison(Node)
+n3.value = i32(30)
+n3.next = none
 
 // Link them: n1 -> n2 -> n3
-n1.poke(Node.next, n2)
-n2.poke(Node.next, n3)
+n1.next = n2
+n2.next = n3
 
-// Traverse the list.
-current = n1.peek(pine[Node])
+// Traverse the list. A null pine reads back as none, which is how you know
+// you have reached the end.
+current = n1
 while current != none {
-    val = current.peek(Node.value)
-    print(f"node value: {val}")
-    current = current.peek(Node.next)
+    print(f"node value: {current.value}")
+    current = current.next
 }
+
+scorch(n1)
+scorch(n2)
+scorch(n3)
 
 // YOUR TASK:
 // 1. Run this file. Does it print 10, 20, 30?
