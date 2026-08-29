@@ -3,7 +3,7 @@
 ## The C Concept
 
 Three ideas that only make sense once Modules 01–04 are behind you. Each one is
-the same underlying fact wearing a different hat: memory is bytes, and a *type*
+the same underlying fact wearing a different hat: memory is bytes, and a **type**
 is a decision about how to read them.
 
 ### Casting
@@ -30,7 +30,7 @@ happen silently.
 ### Fixed-size arrays
 
 In C an array inside a struct is not a pointer to elements stored elsewhere —
-it *is* the elements, laid out inline:
+it **is** the elements, laid out inline:
 
 ```c
 struct Buffer {
@@ -74,7 +74,7 @@ The bug it prevents is the kind that only appears on the other machine.
 - Explicit conversion with `osmosis()`, and truncation as bit-discarding
 - Two's complement: why `-1` cast to unsigned is the maximum value
 - Array fields in a `floorplan`, indexed by hand
-- What an out-of-bounds index does when it lands *inside* the same block
+- What an out-of-bounds index does when it lands **inside** the same block
 - Laying a header over bytes and reading it back with `bathysphere()`
 
 ## Exercises

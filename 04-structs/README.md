@@ -78,7 +78,7 @@ a lesson about C.
 
 C would make you write the types — `int count_nodes(struct Node *head)` — and
 declare the function before anything calls it. crunch-c skips both. What
-carries over is the part that matters here: `head` is a *copy* of the pine you
+carries over is the part that matters here: `head` is a **copy** of the pine you
 passed in. Walking `cur` forward inside the function does not move the
 caller's `n1`, because the pointer was copied even though the block it points
 at was not. That distinction is the whole of pass-by-value in C, and it is the

@@ -33,7 +33,7 @@ security vulnerabilities of the last thirty years.
 ## Writing Text By Hand
 
 crunch-c has no character literals, so you write bytes as decimal ASCII codes.
-This is tedious on purpose — it keeps the fact that a string *is just bytes*
+This is tedious on purpose — it keeps the fact that a string **is just bytes**
 impossible to forget. Keep your words short.
 
 ```

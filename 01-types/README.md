@@ -2,7 +2,7 @@
 
 ## The C Concept
 
-In C, the `<stdint.h>` types have fixed sizes. A `uint8_t` can only hold 0–255. An `int32_t` can hold roughly -2 billion to +2 billion. (Plain `int` and `long` are the ones that are *not* fixed — their widths are implementation-defined, which is exactly why portable code reaches for the `uint8_t`/`int32_t` names.)
+In C, the `<stdint.h>` types have fixed sizes. A `uint8_t` can only hold 0–255. An `int32_t` can hold roughly -2 billion to +2 billion. (Plain `int` and `long` are the ones that are **not** fixed — their widths are implementation-defined, which is exactly why portable code reaches for the `uint8_t`/`int32_t` names.)
 
 What happens when you exceed the range depends on the sign, and the difference matters more than it looks:
 
@@ -25,7 +25,7 @@ C also has implicit type promotion: when you add an `int` and a `char`, the `cha
 
 Two deliberate divergences, both worth holding onto:
 
-- **crunch-c wraps *and warns* on signed overflow too.** Real C gives you
+- **crunch-c wraps and warns on signed overflow too.** Real C gives you
   undefined behavior with no warning at all. The sandbox shows you the shape of
   the bug; C would show you nothing, or something worse.
 - **crunch-c has no integer promotion.** `i32 + u8` is an error here, where C
