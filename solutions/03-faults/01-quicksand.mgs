@@ -1,0 +1,32 @@
+// Solution — Module 03, Exercise 01: Use-After-Free (Quicksand)
+//
+// Task 1: uncommenting the peek gives
+//
+//   quicksand at line N, column M
+//     |
+//   N | val = p.peek(i32)
+//     |         ^
+//   this ground was scorched at line 12 (garrisoned at line 10)
+//
+// Task 2: the message names the scorch line — and the garrison line too, so
+// you get the block's whole story: where it came from, where it died, and
+// where you touched it afterwards. Three locations, one message.
+//
+// Task 3: writing to freed memory is the same fault. poke reports quicksand
+// exactly as peek does. Reading freed memory leaks stale data; writing it
+// corrupts whatever now lives at that address. C distinguishes them only in
+// how badly they end.
+
+p = garrison(4)
+p.poke(i32, 42)
+print(f"while alive: {p.peek(i32)}")
+scorch(p)
+print("scorched")
+
+// Task 3 demonstrated: poke through a scorched pine. Swap the two statements
+// below to see the read version — the message is identical apart from the
+// column, because the fault is about the ground, not the direction of travel.
+print("")
+print("now writing through the scorched pine...")
+p.poke(i32, 99)
+print("unreachable")

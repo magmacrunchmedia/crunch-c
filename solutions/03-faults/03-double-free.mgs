@@ -1,0 +1,39 @@
+// Solution — Module 03, Exercise 03: Double-Free
+//
+// Task 1: the second scorch reports
+//
+//   quicksand at line N, column M
+//   this ground was already scorched at line 27
+//
+// Note the wording differs from use-after-free, which says "this ground was
+// scorched at line X (garrisoned at line Y)". Double-free says "already
+// scorched" — the arena is telling you the block was dead before you asked,
+// not that you read through a dead pine.
+//
+// Task 2: yes — it names the FIRST scorch. That is the useful half. Finding
+// the second free is easy, since it is the line that failed; finding the first
+// one is the hard part, and it is often in a different function written by a
+// different person on a different day.
+//
+// Task 3: caught every time, because the arena remembers each block's state
+// rather than trusting the pointer. In C the allocator's free lists live in
+// the freed memory itself, so a second free corrupts the structure that free()
+// walks — which is why double-free is exploitable and not merely a crash.
+//
+// BONUS (triple-free): the third scorch reports exactly the same fault as the
+// second, and still points at the first scorch. Once a block is dead, every
+// later scorch is the same mistake made again; the arena does not count them.
+// You never see the third one anyway — the run stops at the second.
+
+p = garrison(4)
+p.poke(i32, 42)
+print(f"value: {p.peek(i32)}")
+
+scorch(p)
+print("first scorch — fine, this is the correct one")
+
+// Ends the program, so it goes last.
+print("")
+print("now scorching the same pine a second time...")
+scorch(p)
+print("unreachable")

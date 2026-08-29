@@ -1,0 +1,47 @@
+// Solution — Module 04, Exercise 01: Defining Structs
+//
+// Task 1: it prints "point: (10, 20)". Passing the floorplan to garrison()
+// rather than a byte count is what makes p.x work — the pine knows what it
+// points at, so the floorplan does the offset arithmetic, exactly the job the
+// C compiler does when you write p->x.
+
+floorplan Point {
+    x: i32
+    y: i32
+}
+
+p = garrison(Point)
+p.x = i32(10)
+p.y = i32(20)
+print(f"point: ({p.x}, {p.y})")
+
+// Tasks 2 and 3: a Person with a fixed-size name buffer and an age.
+floorplan Person {
+    name: u8[16]
+    age: u8
+}
+
+person = garrison(Person)
+person.age = u8(25)
+print(f"person age: {person.age}")
+
+// The name field is 16 bytes of storage, not a string type. It has no length
+// and no terminator unless you write one — this is C's char[16], with all of
+// C's ways to get it wrong. Spell "MG" into the first two bytes:
+person.name[0] = u8(77)     // 'M'
+person.name[1] = u8(71)     // 'G'
+person.name[2] = u8(0)      // the terminator C would expect
+
+print("")
+print(f"sizeof(Point)  = {sizeof(Point)}")
+print(f"sizeof(Person) = {sizeof(Person)}")
+layout(Person)
+
+// Person is 17 bytes with no padding: sixteen u8s followed by one more. Every
+// field is byte-aligned, so nothing needs a gap. Exercise 02 shows what
+// happens the moment a wider field joins in.
+
+bathysphere(person)
+
+scorch(p)
+scorch(person)

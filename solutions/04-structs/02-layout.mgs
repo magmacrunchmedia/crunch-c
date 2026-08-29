@@ -1,0 +1,45 @@
+// Solution — Module 04, Exercise 02: Visualizing Layout
+//
+// Task 1: layout(Loose) prints a row per field plus a row per padding gap:
+//
+//   floorplan Loose - 12 bytes, align 4
+//      off  size  field            type
+//        0     1  a                u8
+//        1     3  -- padding --
+//        4     4  b                i32
+//        8     1  c                u8
+//        9     3  -- tail padding --
+//
+// Task 2: 6 bytes of padding — 3 after `a` and 3 after `c`.
+//
+// Task 3: sizeof(Loose) is 12.
+//
+// The two gaps exist for different reasons, and that distinction is the whole
+// lesson:
+//
+//   - The 3 bytes after `a` are ALIGNMENT padding. `b` is an i32 and must
+//     start on a multiple of 4. `a` used byte 0, so bytes 1-3 are burned to
+//     get there.
+//   - The 3 bytes after `c` are TAIL padding. The struct's own alignment is 4
+//     (the widest field's), so its size must be a multiple of 4 — otherwise
+//     the second element of an array of Loose would start misaligned.
+//
+// Tail padding is the one people forget. It exists to make arrays work.
+
+floorplan Loose {
+    a: u8
+    b: i32
+    c: u8
+}
+
+layout(Loose)
+
+print(f"sizeof(Loose) = {sizeof(Loose)}")
+print(f"alignof(Loose) = {alignof(Loose)}")
+
+// 6 of 12 bytes are padding — this struct is half air. Across an array of a
+// million, that is 6 MB spent on nothing. Exercise 03 reclaims it.
+print("")
+print("in an array of 1,000,000 Loose:")
+print(f"  total bytes: {sizeof(Loose) * 1000000}")
+print(f"  wasted on padding: {6 * 1000000}")

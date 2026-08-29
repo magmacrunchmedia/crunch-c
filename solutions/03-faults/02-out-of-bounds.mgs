@@ -1,0 +1,48 @@
+// Solution — Module 03, Exercise 02: Out-of-Bounds (Area Does Not Exist)
+//
+// Task 1: reading p[4] on a 4-byte block gives
+//
+//   area does not exist at line N, column M
+//   byte 4..4 is outside this pine's block, which covers 0..3
+//     (4 bytes garrisoned at line 11)
+//
+// Task 2: the extent is spelled out — "covers 0..3". Four bytes, indices 0
+// through 3. Index 4 is the first one past the end, and it is the classic
+// off-by-one: the count and the last index are never the same number.
+//
+// Task 3: p[100] reports the same fault, "byte 100..100 is outside". The
+// distance does not matter. One byte past the end and ninety-seven bytes past
+// the end are the same kind of wrong, and crunch-c refuses both identically.
+// In C they are worlds apart in practice: p[4] usually lands in the
+// allocator's own bookkeeping and quietly corrupts it, while p[100] is more
+// likely to hit an unmapped page and actually crash. The bug that crashes is
+// the lucky one.
+//
+// Task 4: on an 8-byte block the last valid index is 7.
+
+p = garrison(4)
+p.poke(i32, 42)
+print(f"within bounds: {p.peek(i32)}")
+
+// Task 4 demonstrated: walk an 8-byte block to its real last index.
+eight = garrison(8)
+print("")
+print("8 bytes — valid indices are 0..7:")
+i = 0
+while i < 8 {
+    print(f"  byte {i}: {eight[i]}")
+    i = i + 1
+}
+print("index 8 would be the first one past the end")
+scorch(eight)
+
+// BONUS: this is the shape of every buffer overflow. An out-of-bounds read
+// leaks whatever sits next door; an out-of-bounds write overwrites it. Heap
+// allocators keep their own metadata between blocks, so "next door" is often
+// the bookkeeping that free() will later trust.
+
+// Ends the program, so it goes last.
+print("")
+print("now reading one byte past the end of a 4-byte block...")
+val = p[4]
+print(f"unreachable: {val}")

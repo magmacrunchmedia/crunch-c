@@ -1,0 +1,40 @@
+// Solution — Module 02, Exercise 04: Freeing Memory
+//
+// Task 1: as shipped the file runs clean. It writes 42, reads it back, then
+// scorches the block. Nothing touches the block after that, so nothing is
+// wrong — this is the well-behaved version.
+//
+// Task 2: uncommenting the peek turns it into use-after-free:
+//
+//   quicksand at line N, column M
+//   this ground was scorched at line 12 (garrisoned at line 10)
+//
+// The message names both moments — where the block was freed and where it was
+// allocated. In C you would get neither. You would get whatever bytes happen
+// to be at that address now, which is often the old value, which is why this
+// bug survives testing and fails in production.
+//
+// BONUS (double-free): calling scorch(p) twice reports quicksand as well, and
+// names the first scorch. See 03-faults/03-double-free for that one.
+//
+// BONUS (leak): skipping scorch entirely ends the run with
+//   spooked: ancient weeds - 1 pine never scorched (4 bytes), garrisoned at line N
+// See 03-faults/04-leaks.
+
+p = garrison(4)
+p.poke(i32, 42)
+print(f"before scorch: {p.peek(i32)}")
+
+scorch(p)
+print("after scorch — the block is gone, and p still points at where it was")
+
+// A pine does not become none when you scorch it. It keeps the same address;
+// only the ground under it changed. That is precisely why C cannot warn you:
+// the pointer looks exactly as valid as it did a line earlier.
+
+// Reading through it now is use-after-free. This ends the program, so it is
+// the last statement in the file.
+print("")
+print("now reading through the scorched pine...")
+val = p.peek(i32)
+print(f"unreachable: {val}")

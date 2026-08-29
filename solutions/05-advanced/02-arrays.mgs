@@ -1,0 +1,104 @@
+// Solution — Module 05, Exercise 02: Fixed-Size Arrays
+//
+// Task 1: yes — 10, 20, 30, 40.
+//
+// Task 4 is the one worth sitting with, because the answer is "it depends,
+// and the dangerous case is the quiet one."
+//
+// A Buffer is 20 bytes: data covers 0..15, length covers 16..19. Element 4 of
+// a 4-element array is at offset 16 — which is length. Writing there is still
+// INSIDE the block, so the arena permits it and silently overwrites length.
+// No fault, no warning. That is precisely the C behaviour: an array field is
+// just bytes, the index is not checked, and the neighbour absorbs the damage.
+//
+// Keep going and eventually you leave the block. At that point it is caught:
+//
+//   area does not exist at line N, column M
+//   byte 100..103 is outside this pine's block, which covers 0..19
+//
+// So the arena guards the block boundary, not the field boundary. Overrun far
+// enough and you are told; overrun by one and you have corrupted your own
+// struct, which is the overflow that actually ships.
+
+floorplan Buffer {
+    data: i32[4]
+    length: i32
+}
+
+buf = garrison(Buffer)
+
+i = 0
+while i < 4 {
+    slot = buf + i * 4
+    slot.poke(i32, i32((i + 1) * 10))
+    i = i + 1
+}
+buf.length = i32(4)
+
+print(f"buffer has {buf.length} elements")
+i = 0
+while i < buf.length {
+    slot = buf + i * 4
+    print(f"data[{i}] = {slot.peek(i32)}")
+    i = i + 1
+}
+
+// Task 4, the quiet case: element 4 lands on length.
+print("")
+print(f"length before writing data[4]: {buf.length}")
+overrun = buf + 4 * 4
+overrun.poke(i32, i32(999))
+print(f"length after writing data[4]:  {buf.length}")
+print("no fault — the write stayed inside the block and ate the next field")
+
+// Tasks 2 and 3: a 3x3 matrix.
+//
+// Array fields are one-dimensional, so a 3x3 grid is nine elements indexed
+// row * 3 + col — exactly how C lays out int m[3][3] in memory. C's
+// two-dimensional syntax is a convenience; the bytes are a single run.
+print("")
+floorplan Matrix {
+    cells: i32[9]
+    rows: u8
+    cols: u8
+}
+
+m = garrison(Matrix)
+m.rows = u8(3)
+m.cols = u8(3)
+
+row = 0
+while row < 3 {
+    col = 0
+    while col < 3 {
+        cell = m + (row * 3 + col) * 4
+        cell.poke(i32, i32(row * 3 + col + 1))
+        col = col + 1
+    }
+    row = row + 1
+}
+
+print("3x3 matrix:")
+row = 0
+while row < 3 {
+    line = ""
+    col = 0
+    while col < 3 {
+        cell = m + (row * 3 + col) * 4
+        line = line + f"{cell.peek(i32)} "
+        col = col + 1
+    }
+    print(f"  {line}")
+    row = row + 1
+}
+
+layout(Matrix)
+scorch(m)
+
+// Task 4, the loud case: far enough past the end to leave the block.
+// This ends the program, so it goes last.
+print("")
+print("now writing 100 bytes into a 20-byte block...")
+far = buf + 100
+far.poke(i32, i32(1))
+print("unreachable")

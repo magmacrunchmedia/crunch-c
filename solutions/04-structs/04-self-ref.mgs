@@ -1,0 +1,79 @@
+// Solution — Module 04, Exercise 04: Self-Referencing Structs
+//
+// Task 1: yes — it prints 10, 20, 30.
+//
+// Task 4: if you forget to link a node it is simply never visited. The list
+// still traverses cleanly and stops early, because `next` was initialised to
+// none. Nothing errors. The node stays allocated but unreachable, so the run
+// ends with an ancient-weeds warning naming its garrison line — a leak, which
+// is exactly what an unreachable heap node is in C.
+//
+// Worth noticing: that only holds because every node's next is set to none up
+// front. Skip that and the field holds whatever was in the block already,
+// which C would happily follow into nowhere.
+
+floorplan Node {
+    value: i32
+    next: pine[Node]
+}
+
+// Task 2: four nodes rather than three.
+n1 = garrison(Node)
+n1.value = i32(10)
+n1.next = none
+
+n2 = garrison(Node)
+n2.value = i32(20)
+n2.next = none
+
+n3 = garrison(Node)
+n3.value = i32(30)
+n3.next = none
+
+n4 = garrison(Node)
+n4.value = i32(40)
+n4.next = none
+
+n1.next = n2
+n2.next = n3
+n3.next = n4
+
+// Traverse.
+current = n1
+while current != none {
+    print(f"node value: {current.value}")
+    current = current.next
+}
+
+// Task 3: count the nodes.
+//
+// The walk is the same shape as the traversal above — follow next until it
+// reads none. This is the loop at the heart of every linked-list operation in
+// C, and the reason a broken next field is so destructive: nothing else knows
+// where the list ends.
+fn count_nodes(head) {
+    n = 0
+    cur = head
+    while cur != none {
+        n = n + 1
+        cur = cur.next
+    }
+    return n
+}
+
+print("")
+print(f"node count: {count_nodes(n1)}")
+print(f"count from n3: {count_nodes(n3)}")
+print(f"count from none: {count_nodes(none)}")
+
+// BONUS: the raw memory of one node. value sits in the first 4 bytes; next is
+// a pine, 8 bytes, after 4 bytes of alignment padding — the same padding rule
+// as Exercise 02, here forced by the pointer's own width.
+print("")
+layout(Node)
+bathysphere(n1)
+
+scorch(n1)
+scorch(n2)
+scorch(n3)
+scorch(n4)

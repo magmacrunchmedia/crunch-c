@@ -1,0 +1,35 @@
+// Solution — Module 02, Exercise 02: Reading and Writing Memory
+//
+// Task 1: the first byte of i32(42) is 42. 42 fits in one byte, and on a
+// little-endian machine the least significant byte comes first, so the whole
+// value sits in byte 0 and bytes 1-3 are zero.
+//
+// Task 2: i32(1000) gives first byte 232, second byte 3.
+// 1000 is 0x3E8. Little-endian stores it low byte first: E8 03 00 00.
+// 0xE8 is 232 and 0x03 is 3 — so 232 + 3 * 256 = 1000.
+
+p = garrison(4)
+p.poke(i32, 42)
+print(f"wrote 42, read back: {p.peek(i32)}")
+print(f"first byte of 42: {p[0]}")
+
+p.poke(i32, 1000)
+print("")
+print(f"wrote 1000, read back: {p.peek(i32)}")
+print(f"byte 0: {p[0]}   byte 1: {p[1]}   byte 2: {p[2]}   byte 3: {p[3]}")
+print("1000 = 0x3E8, stored low byte first: E8 03 00 00")
+
+// bathysphere shows the same bytes laid out as a hex dump.
+bathysphere(p)
+
+// Task 3: eight bytes holding two i32s side by side.
+print("")
+pair = garrison(8)
+pair.poke(i32, 111)
+(pair + 4).poke(i32, 222)
+print(f"first i32 (offset 0): {pair.peek(i32)}")
+print(f"second i32 (offset 4): {(pair + 4).peek(i32)}")
+bathysphere(pair)
+
+scorch(p)
+scorch(pair)

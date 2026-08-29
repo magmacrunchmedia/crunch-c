@@ -1,0 +1,32 @@
+// Solution — Module 01, Exercise 01: Fixed-Width Integers
+//
+// Task 1 & 2 are about what happens when a literal does not fit.
+// Note the wording in the exercise: these are *warnings*, not errors.
+// crunch-c wraps the value the way C does and tells you it did.
+//
+//   u8(256)  -> spooked: u8(): 256 does not fit u8 [0, 255] - wrapped to 0
+//   i8(200)  -> spooked: i8(): 200 does not fit i8 [-128, 127] - wrapped to -56
+//
+// 200 wraps to -56 because 200 - 256 = -56: the bit pattern 0b11001000 read
+// as a signed byte is negative. The bits never changed, only how we read them.
+
+// Task 1: a u8 literal that overflows.
+over_u8 = u8(256)
+print(f"u8(256) wrapped to: {over_u8}")
+
+// Task 2: a signed i8 literal that overflows.
+over_i8 = i8(200)
+print(f"i8(200) wrapped to: {over_i8}")
+
+// Task 3: a u16 at its maximum.
+max_u16 = u16(65535)
+print(f"u16 max: {max_u16}")
+
+// Task 4: an i64 holding a number no 32-bit type could.
+large = i64(9999999999)
+print(f"i64 large: {large}")
+
+// For contrast, the same number does not fit an i32, whose range stops
+// just above 2.1 billion:
+too_big = i32(9999999999)
+print(f"i32(9999999999) wrapped to: {too_big}")

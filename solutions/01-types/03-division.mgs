@@ -1,0 +1,31 @@
+// Solution — Module 01, Exercise 03: Truncating Division
+//
+// Task 1: -7 / 2 is -3, not -4.
+// Task 2: 10 / 3 is 3.
+// Task 3: -10 / 3 is -3.
+//
+// The rule is "truncate toward zero" — throw away the fractional part and
+// keep the sign. Python's // floors toward negative infinity instead, so it
+// answers -4 and -4. Same numbers, different direction, and the two agree
+// on every positive case, which is what makes the disagreement easy to miss.
+
+print(f"7 / 2 = {i32(7) / i32(2)}")
+print(f"-7 / 2 = {i32(-7) / i32(2)}")
+
+// Task 4: divide two i32 variables and check against C, not Python.
+a = i32(10)
+b = i32(3)
+print(f"{a} / {b} = {a / b}")
+
+c = i32(-10)
+d = i32(3)
+print(f"{c} / {d} = {c / d}")
+
+// The pairs below make the direction visible. Truncation is symmetric about
+// zero: the negative answer is the negation of the positive one. Flooring is
+// not — it would give -4 on the left of each pair while C gives -3.
+print("")
+print("truncation is symmetric about zero:")
+print(f"   7 / 2 = {i32(7) / i32(2)}     -7 / 2 = {i32(-7) / i32(2)}")
+print(f"  10 / 3 = {i32(10) / i32(3)}    -10 / 3 = {i32(-10) / i32(3)}")
+print(f"   9 / 4 = {i32(9) / i32(4)}     -9 / 4 = {i32(-9) / i32(4)}")

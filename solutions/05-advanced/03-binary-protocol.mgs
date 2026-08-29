@@ -1,0 +1,120 @@
+// Solution — Module 05, Exercise 03: Binary Protocol Parsing
+//
+// Task 1: yes, the round-trip works. Every field comes back as written.
+//
+// Task 3: adding a u8 checksum takes the header from 8 bytes to 12, not 9.
+// The struct's alignment is 4 (payload_len is a u32), so its size must be a
+// multiple of 4. One extra byte costs four. That is the tail-padding rule
+// from Module 04 showing up somewhere it actually matters — if the peer on
+// the other end of the wire assumes 9, every field after the header is
+// misaligned and the protocol is broken.
+
+floorplan PacketHeader {
+    magic: u16
+    version: u8
+    flags: u8
+    payload_len: u32
+}
+
+header = garrison(PacketHeader)
+header.magic = u16(19783)      // 0x4D47, "MG"
+header.version = u8(1)
+header.flags = u8(15)          // 0x0F
+header.payload_len = u32(4)
+
+layout(PacketHeader)
+print(f"header size: {sizeof(PacketHeader)}")
+
+print("")
+print(f"magic: {header.magic}")
+print(f"version: {header.version}")
+print(f"flags: {header.flags}")
+print(f"payload length: {header.payload_len}")
+
+// The bytes read 47 4d, not 4d 47: little-endian stores the low byte first,
+// so the magic number spells "GM" in the dump even though it is "MG" on the
+// wire. Every binary protocol has to pick an endianness and say so; network
+// byte order is big-endian precisely to stop this being ambiguous.
+bathysphere(header)
+
+scorch(header)
+
+// Task 2: the same header with a checksum.
+print("")
+print("=== Task 2: with a checksum ===")
+
+floorplan PacketHeaderSummed {
+    magic: u16
+    version: u8
+    flags: u8
+    payload_len: u32
+    checksum: u8
+}
+
+layout(PacketHeaderSummed)
+print(f"with checksum: {sizeof(PacketHeaderSummed)} bytes")
+print(f"one extra byte cost {sizeof(PacketHeaderSummed) - sizeof(PacketHeader)}")
+
+// Reordering does not rescue it. Tucking the checksum in beside the other
+// u8s still gives 12, because the five fields need 9 bytes and 9 rounded up
+// to a multiple of the struct's 4-byte alignment is 12 whatever the order.
+// Widest-first is a good habit, not a cure — once the payload is 9 bytes,
+// 12 is the floor.
+floorplan PacketHeaderPacked {
+    magic: u16
+    version: u8
+    flags: u8
+    checksum: u8
+    payload_len: u32
+}
+print("")
+layout(PacketHeaderPacked)
+print(f"checksum moved before payload_len: {sizeof(PacketHeaderPacked)} bytes")
+
+// Task 4: a larger protocol.
+//
+// The magic is four bytes of text, so it is a u8[4], not a number — "TEST"
+// has no numeric meaning and storing it as a u32 would make its byte order
+// depend on the machine. Text fields stay byte arrays for exactly that reason.
+print("")
+print("=== Task 4: a larger protocol ===")
+
+floorplan Message {
+    magic: u8[4]         // "TEST"
+    msg_type: u16
+    sequence: u16
+    timestamp: u32
+    data_len: u16
+}
+
+layout(Message)
+print(f"sizeof(Message) = {sizeof(Message)}")
+
+msg = garrison(Message)
+msg.msg_type = u16(7)
+msg.sequence = u16(1)
+msg.timestamp = u32(1700000000)
+msg.data_len = u16(0)
+
+// Spell "TEST" into the magic bytes. Array elements of a u8 field are single
+// bytes, so writing them one at a time is the natural fit here.
+tag = msg + 0
+tag.poke(u8, u8(84))         // 'T'
+tag = msg + 1
+tag.poke(u8, u8(69))         // 'E'
+tag = msg + 2
+tag.poke(u8, u8(83))         // 'S'
+tag = msg + 3
+tag.poke(u8, u8(84))         // 'T'
+
+print("")
+print(f"msg_type: {msg.msg_type}")
+print(f"sequence: {msg.sequence}")
+print(f"timestamp: {msg.timestamp}")
+print(f"data_len: {msg.data_len}")
+bathysphere(msg)
+
+// The dump spells TEST in the ASCII column because those bytes are text, not
+// a number — no endianness to reverse them.
+
+scorch(msg)

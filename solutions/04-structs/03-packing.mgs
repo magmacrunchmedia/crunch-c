@@ -1,0 +1,100 @@
+// Solution — Module 04, Exercise 03: Field Ordering and Packing
+//
+// Task 1: Loose is 12 bytes, Tight is 8. Reordering saves 4 bytes — a third
+// of the struct — without changing a single field.
+//
+// Task 2: Tight is smaller because it puts the i32 first. Starting at offset
+// 0, the i32 is already aligned, so no gap is needed to reach it. The two u8s
+// then fill bytes 4 and 5, and only 2 bytes of tail padding round the struct
+// up to a multiple of its 4-byte alignment. Loose instead opens with a u8,
+// which forces 3 wasted bytes to reach the i32, and closes with a u8, which
+// forces 3 more.
+//
+// The general rule: order fields widest first. Each field lands on its own
+// alignment automatically, and all the slack collects in one place at the end.
+
+floorplan Loose {
+    a: u8
+    b: i32
+    c: u8
+}
+
+floorplan Tight {
+    b: i32
+    a: u8
+    c: u8
+}
+
+print("=== Loose ordering ===")
+layout(Loose)
+print(f"sizeof(Loose) = {sizeof(Loose)}")
+
+print("")
+print("=== Tight ordering ===")
+layout(Tight)
+print(f"sizeof(Tight) = {sizeof(Tight)}")
+
+// Task 3: fields u8, u8, i32, u8.
+//
+// Worst order is the one given — 12 bytes. Best is i32 first, then the three
+// u8s: 8 bytes. The i32 needs 4-byte alignment; put it at offset 0 and the
+// u8s fill 4, 5 and 6, leaving 1 byte of tail padding.
+print("")
+print("=== Task 3: u8, u8, i32, u8 ===")
+
+floorplan Task3Worst {
+    p: u8
+    q: u8
+    r: i32
+    s: u8
+}
+
+floorplan Task3Best {
+    r: i32
+    p: u8
+    q: u8
+    s: u8
+}
+
+layout(Task3Worst)
+print(f"sizeof as given (u8,u8,i32,u8) = {sizeof(Task3Worst)}")
+print("")
+layout(Task3Best)
+print(f"sizeof widest-first (i32,u8,u8,u8) = {sizeof(Task3Best)}")
+
+// Task 4: fields i32, u8, i64, u8.
+//
+// As given: 24 bytes. Widest first (i64, i32, u8, u8): 16 bytes. The i64
+// drags the struct's alignment up to 8, so a badly placed i64 wastes even
+// more than a badly placed i32 — the gap needed to reach it is bigger.
+print("")
+print("=== Task 4: i32, u8, i64, u8 ===")
+
+floorplan Task4Worst {
+    w: i32
+    x: u8
+    y: i64
+    z: u8
+}
+
+floorplan Task4Best {
+    y: i64
+    w: i32
+    x: u8
+    z: u8
+}
+
+layout(Task4Worst)
+print(f"sizeof as given (i32,u8,i64,u8) = {sizeof(Task4Worst)}")
+print("")
+layout(Task4Best)
+print(f"sizeof widest-first (i64,i32,u8,u8) = {sizeof(Task4Best)}")
+
+print("")
+print(f"Task 3 saved {sizeof(Task3Worst) - sizeof(Task3Best)} bytes")
+print(f"Task 4 saved {sizeof(Task4Worst) - sizeof(Task4Best)} bytes")
+
+// This is why protocol and file-format headers are laid out widest-first, and
+// why C compilers are not allowed to reorder fields for you: the layout is
+// part of the interface. Anything reading those bytes — another program, a
+// network peer, a file written last year — depends on the exact order.

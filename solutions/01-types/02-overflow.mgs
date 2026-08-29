@@ -1,0 +1,52 @@
+// Solution — Module 01, Exercise 02: Overflow and Wrapping
+//
+// Task 1: the warning is
+//   spooked at line N: u8 overflow: 255 + 1 = 256, wrapped to 0 (range [0, 255])
+//
+// Task 2: u8(255) + u8(1) is 0. The arithmetic is done, the result does not
+// fit in eight bits, and the high bit falls off the end. In C this is defined
+// behaviour for unsigned types — which is exactly why it is dangerous: the
+// compiler is allowed to assume you meant it.
+
+counter = u8(254)
+print(f"start: {counter}")
+
+counter = counter + u8(1)
+print(f"after +1: {counter}")
+
+counter = counter + u8(1)
+print(f"after +1 again: {counter}")
+
+// Task 3: count from 250 up through 260.
+//
+// The loop runs ten times, but the warning fires exactly ONCE — on the single
+// step that crosses 255. Every other step is an ordinary addition. This is the
+// point of the exercise: a wrap is a one-instant event, easy to miss in a log,
+// and afterwards the counter looks perfectly reasonable again.
+print("")
+print("counting u8 from 250, ten times:")
+
+c = u8(250)
+i = 0
+while i < 10 {
+    c = c + u8(1)
+    print(f"  step {i + 1}: {c}")
+    i = i + 1
+}
+print(f"final value: {c}")
+
+// 250 + 10 = 260, and 260 - 256 = 4. The counter ends at 4, not 260.
+
+// BONUS: signed overflow.
+//
+// In C, signed overflow is *undefined* behaviour, not merely wrapping — the
+// compiler may assume it never happens and optimise on that basis. crunch-c
+// wraps and warns so you can see the shape of the bug.
+print("")
+neg = i8(-128)
+print(f"i8 min: {neg}")
+
+neg = neg - i8(1)
+print(f"after -1: {neg}")
+
+// -128 - 1 wraps to 127: the lowest value becomes the highest.

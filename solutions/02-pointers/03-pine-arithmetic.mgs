@@ -1,0 +1,57 @@
+// Solution — Module 02, Exercise 03: Pointer Arithmetic
+//
+// Tasks 1-3: allocate 12 bytes, write three i32s at offsets 0, 4 and 8, and
+// read them back. Because pine arithmetic moves one byte at a time (like
+// char* in C, not int*), stepping to the next i32 means adding 4, not 1.
+
+p = garrison(12)
+
+p.poke(i32, 100)
+(p + 4).poke(i32, 200)
+(p + 8).poke(i32, 300)
+
+print(f"offset 0: {p.peek(i32)}")
+print(f"offset 4: {(p + 4).peek(i32)}")
+print(f"offset 8: {(p + 8).peek(i32)}")
+bathysphere(p)
+
+// BONUS: walk the same block with a loop, computing each offset as i * 4.
+print("")
+arr = garrison(16)
+i = 0
+while i < 4 {
+    (arr + i * 4).poke(i32, (i + 1) * 10)
+    i = i + 1
+}
+
+i = 0
+while i < 4 {
+    print(f"arr[{i}] = {(arr + i * 4).peek(i32)}")
+    i = i + 1
+}
+
+scorch(arr)
+
+// Task 4: reading an i32 at offset 10 of a 12-byte block.
+//
+// An i32 is four bytes, so offset 10 asks for bytes 10, 11, 12 and 13. The
+// block only covers 0..11. Two of those bytes are past the end, so this is
+// out of bounds and the run stops here:
+//
+//   area does not exist at line N, column M
+//   byte 10..13 is outside this pine's block, which covers 0..11
+//     (12 bytes garrisoned at line 7)
+//
+// Note what this is NOT. The read is not rejected for being misaligned —
+// offset 10 is not a multiple of 4, and C would call that undefined too, but
+// that is not the complaint here. It is rejected for running off the end.
+// Offsets 0 and 4 fit; 8 fits exactly, ending on the last byte; 10 does not.
+//
+// In C this read would quietly succeed, handing you two bytes of your data
+// and two bytes of whatever the allocator put next door.
+//
+// This is the last statement in the file because it ends the program.
+print("")
+print("now reading an i32 at offset 10 of a 12-byte block...")
+val = (p + 10).peek(i32)
+print(f"unreachable: {val}")

@@ -1,0 +1,40 @@
+// Solution — Module 02, Exercise 01: Allocating Memory
+//
+// Task 1: the file prints its two messages. garrison() hands back a pine, but
+// nothing here reads or writes through it yet, so there is nothing else to see.
+//
+// Task 2: 8 bytes holds one i64 or one f64, or two i32s, or eight u8s. Size is
+// all the arena knows — a block has no type until you peek or poke one.
+//
+// Task 3: 1 byte holds a u8 (0..255) or an i8 (-128..127). One byte, two very
+// different ranges, depending only on how you choose to read it.
+
+p = garrison(4)
+print("allocated 4 bytes — room for one i32")
+
+arr = garrison(16)
+print("allocated 16 bytes — room for four i32s")
+
+eight = garrison(8)
+print("allocated 8 bytes — one i64, or two i32s, or eight u8s")
+
+one = garrison(1)
+print("allocated 1 byte — a u8 or an i8")
+
+// The same eight bytes, read two ways. Nothing about the block changed
+// between these two lines; only the type we handed to peek did.
+eight.poke(i64, i64(1))
+print("")
+print(f"as one i64:  {eight.peek(i64)}")
+print(f"as an i32 at offset 0: {eight.peek(i32)}")
+print(f"as an i32 at offset 4: {(eight + 4).peek(i32)}")
+
+// Free everything. Leave any of these out and the run ends with an
+// "ancient weeds" warning naming the line that allocated it — which is
+// exactly what Module 03 Exercise 04 is about.
+scorch(p)
+scorch(arr)
+scorch(eight)
+scorch(one)
+print("")
+print("all four blocks scorched — no ancient weeds")

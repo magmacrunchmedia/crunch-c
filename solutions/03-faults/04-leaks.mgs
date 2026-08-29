@@ -1,0 +1,42 @@
+// Solution — Module 03, Exercise 04: Memory Leaks (Ancient Weeds)
+//
+// Task 1: the file as shipped ends with
+//
+//   spooked: ancient weeds - 1 pine never scorched (8 bytes),
+//            garrisoned at line 15
+//
+// p1 is freed, p2 is not, so exactly one block is still standing when the
+// program ends.
+//
+// Task 2: the warning names the line that ALLOCATED the block, not the line
+// where the program ended. That is the only line that can help you — a leak
+// has no site of failure, which is what makes it hard. Nothing goes wrong at
+// any particular moment; the program simply never gets around to cleaning up.
+//
+// Task 3: scorch p2 as well and the warning disappears entirely. There is no
+// "leaks: 0" line — a clean run is silent. This file is the clean version, so
+// running it prints the values and nothing else.
+
+p1 = garrison(4)
+p1.poke(i32, 42)
+print(f"p1 holds: {p1.peek(i32)}")
+
+p2 = garrison(8)
+p2.poke(i64, i64(999))
+print(f"p2 holds: {p2.peek(i64)}")
+
+scorch(p1)
+print("p1 scorched")
+
+// Task 3: the line the exercise leaves out. Comment it back out and the run
+// ends with the ancient-weeds warning naming line 25.
+scorch(p2)
+print("p2 scorched")
+
+print("")
+print("both blocks freed — the run ends silent, no ancient weeds")
+
+// Leaks report at program exit, not at the moment of the mistake, so a leak
+// warning is the last thing you see rather than the first. In C nothing
+// reports them at all: the process exits, the OS reclaims the pages, and the
+// only symptom is a long-running program that slowly grows.

@@ -1,0 +1,52 @@
+// Solution — Module 05, Exercise 01: Type Casting (Osmosis)
+//
+// Task 1: osmosis(i32(256), u8) is 0. 256 needs nine bits; a u8 keeps eight.
+// The ninth bit is dropped and what remains is zero.
+//
+// Task 2: osmosis(i32(-1), u8) is 255. In two's complement -1 is all ones.
+// Take the low eight bits and you have 11111111, which read as unsigned is
+// 255. The bits did not change — only the interpretation did.
+//
+// Task 3: osmosis(f32(3.14), i32) is 3. Float-to-int truncates toward zero,
+// discarding the fraction. It does not round: 3.9 would also give 3.
+//
+// Task 4: i32 + u8 is rejected because crunch-c has NO integer promotion.
+// C would silently promote both operands to a common type and hand you a
+// result, and the rules for which type wins are subtle enough that the answer
+// is often not what you meant — signed/unsigned comparisons that are always
+// true being the classic case. crunch-c makes you say which one you meant.
+
+big = i32(300)
+print(f"i32(300) -> u8:  {osmosis(big, u8)}")
+print(f"i32(300) -> f32: {osmosis(big, f32)}")
+
+print("")
+print(f"Task 1: osmosis(i32(256), u8)   = {osmosis(i32(256), u8)}")
+print(f"Task 2: osmosis(i32(-1), u8)    = {osmosis(i32(-1), u8)}")
+print(f"Task 3: osmosis(f32(3.14), i32) = {osmosis(f32(3.14), i32)}")
+
+// Task 4 demonstrated. Uncomment to see the refusal:
+//
+//   contemplate at line N, column M
+//   cannot use '+' on i32 and u8 - convert one first, e.g. osmosis(x, i32)
+//
+// a = i32(1)
+// b = u8(2)
+// c = a + b
+
+// The fix is to say which width you want the arithmetic done in:
+a = i32(1)
+b = u8(2)
+c = a + osmosis(b, i32)
+print("")
+print(f"i32(1) + osmosis(u8(2), i32) = {c}")
+
+// BONUS: osmosis(i32(-1), u32).
+//
+// The answer is 4294967295 — the largest u32. Same all-ones bit pattern as
+// -1, read as unsigned. This is the single most productive bug in C: a
+// negative length or index cast to unsigned becomes an enormous positive
+// number, and the bounds check that was supposed to catch it passes.
+print("")
+print(f"BONUS: osmosis(i32(-1), u32) = {osmosis(i32(-1), u32)}")
+print("      -1 and 4294967295 are the same 32 bits, read two ways")
