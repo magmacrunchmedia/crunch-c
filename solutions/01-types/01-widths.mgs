@@ -26,7 +26,11 @@ print(f"u16 max: {max_u16}")
 large = i64(9999999999)
 print(f"i64 large: {large}")
 
-// For contrast, the same number does not fit an i32, whose range stops
-// just above 2.1 billion:
+// Task 5: the same number does not fit an i32, whose range stops just above
+// 2.1 billion. It wraps rather than saturating - you do not get "the biggest
+// i32", you get whatever the low 32 bits happen to spell, read as signed.
+// Guessing this one correctly in advance is hard, and that is the point: a
+// value that overflowed is not a value you can reason about from the
+// original number.
 too_big = i32(9999999999)
 print(f"i32(9999999999) wrapped to: {too_big}")

@@ -30,11 +30,10 @@ print(f"i8 value: {small}")
 // YOUR TASK:
 // 1. Uncomment the u8(256) line. What error do you see?
 // 2. Uncomment the i8(200) line. What error do you see?
-// 3. Create a u16 variable and assign it 65535 (its max).
-// 4. Create an i64 variable and assign it a large number.
-
-max_u16 = u16(65535)
-print(f"u16 max: {max_u16}")
-
-large = i64(9999999999)
-print(f"i64 large: {large}")
+// 3. Create a u16 variable, assign it 65535 (its max), and print it.
+// 4. Create an i64 variable and give it 9999999999 - a number far too big
+//    for any 32-bit type. Print it.
+// 5. Now put that same 9999999999 into an i32 and print it. It does not
+//    fit. Before you run it: what do you expect to come out?
+//
+// Write your answers below this line.

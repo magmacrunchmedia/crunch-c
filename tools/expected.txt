@@ -1,0 +1,15 @@
+# Expected exit codes for every .mgs file in the course.
+#
+# Anything not listed here is expected to exit 0. The files below end by
+# deliberately triggering the fault they teach, so a non-zero exit IS the
+# lesson (see the Solutions section of the root README). If one of these ever
+# starts exiting 0, the demonstration has stopped demonstrating.
+#
+# Format: <path> <expected exit code>
+
+solutions/02-pointers/03-pine-arithmetic.mgs   1
+solutions/02-pointers/04-scorch.mgs            1
+solutions/03-faults/01-quicksand.mgs           1
+solutions/03-faults/02-out-of-bounds.mgs       1
+solutions/03-faults/03-double-free.mgs         1
+solutions/05-advanced/02-arrays.mgs            1

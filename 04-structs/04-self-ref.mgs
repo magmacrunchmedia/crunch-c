@@ -47,5 +47,6 @@ scorch(n3)
 // 3. Write a function that counts the nodes in the list.
 // 4. What happens if you forget to link a node?
 
-// BONUS: Use bathysphere to inspect the raw memory
-// of a node. Can you spot the value and the pointer?
+// BONUS: Use bathysphere (the hex dump from Module 02) to inspect the raw
+// memory of a node. Can you spot the value and the pointer? Run layout(Node)
+// alongside it if you want the field offsets to compare against.

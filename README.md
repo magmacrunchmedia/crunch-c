@@ -14,6 +14,34 @@ Learn C memory management without segfaults.
 | 04 Structs | Memory layout, padding, alignment | `floorplan`, `layout()`, `sizeof` |
 | 05 Advanced | Type casting, arrays, binary protocols | `osmosis()`, arrays in floorplans |
 
+## Scope
+
+This teaches C's *memory model*: how values are sized, how the heap is
+allocated and freed, how structs are laid out, and how the classic memory bugs
+actually happen. Work through all 18 exercises and you will read C memory code
+with real understanding.
+
+It does not teach you to write and compile a C program. There is no `main()`,
+no `#include`, no compiler, no linker. Also deliberately out of scope for now:
+strings and NUL-termination, `calloc`/`realloc`, unions, bitwise operators, the
+preprocessor, and the stack (every allocation here is heap).
+
+When you leave the sandbox, the arena's job is done by real tools, and they are
+worth meeting early:
+
+- **AddressSanitizer** (`gcc -fsanitize=address -g`) reports use-after-free,
+  out-of-bounds and leaks -- the whole of Module 03.
+- **UndefinedBehaviorSanitizer** (`-fsanitize=undefined`) catches the signed
+  overflow from Module 01.
+- **Valgrind** (`valgrind --leak-check=full`) finds leaks in a binary you
+  cannot rebuild.
+- **`-Wall -Wextra`** catches a surprising share of this before you run
+  anything.
+
+Every "spooked", "quicksand" and "ancient weeds" message in this course is
+something one of those four would have told you. The difference is that in C
+nobody turns them on for you.
+
 ## Prerequisites
 
 - Basic programming knowledge (any language)
@@ -66,6 +94,19 @@ magmascript solutions/03-faults/01-quicksand.mgs
 Solutions for modules 02, 03 and 05 end by deliberately triggering the fault
 they teach, so they exit non-zero on purpose. That is the lesson, not a
 failure.
+
+## Checking The Lessons
+
+`tools/check.py` runs all 36 exercises and solutions and compares each exit
+code against `tools/expected.txt`:
+
+```bash
+python tools/check.py
+```
+
+Files that are supposed to fault must still fault -- if one of them starts
+exiting cleanly, that is a failure too. Run it after editing any lesson. CI
+runs it on every push and pull request.
 
 ## License
 

@@ -36,6 +36,34 @@ This takes only 8 bytes.
 - Field ordering and its impact on size
 - Self-referencing structs (linked list nodes)
 
+## Functions
+
+Exercise 04 asks you to write one, so here is the syntax. `fn`, a name,
+parameters without types, and `return`:
+
+```
+fn count_nodes(head) {
+    n = 0
+    cur = head
+    while cur != none {
+        n = n + 1
+        cur = cur.next
+    }
+    return n
+}
+
+print(f"length: {count_nodes(n1)}")
+```
+
+C would make you write the types — `int count_nodes(struct Node *head)` — and
+declare the function before anything calls it. crunch-c skips both. What
+carries over is the part that matters here: `head` is a *copy* of the pine you
+passed in. Walking `cur` forward inside the function does not move the
+caller's `n1`, because the pointer was copied even though the block it points
+at was not. That distinction is the whole of pass-by-value in C, and it is the
+reason C can hand a function access to a structure without handing over the
+variable holding its address.
+
 ## Exercises
 
 | File | Concept |

@@ -1,0 +1,41 @@
+name: Check lessons run
+
+# Every .mgs file in the course is executed and its exit code compared against
+# tools/expected.txt. Most must exit 0; the handful that end by deliberately
+# triggering a fault must exit non-zero, and a clean exit from one of those is
+# treated as a failure -- the demonstration has stopped demonstrating.
+#
+# This exists because nothing else here runs the lessons. The repo has already
+# needed a commit titled "Fix four exercises that could not run"; this is what
+# catches the next one.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "0*/**.mgs"
+      - "solutions/**.mgs"
+      - "tools/**"
+      - ".github/workflows/check-lessons.yml"
+  pull_request:
+    paths:
+      - "0*/**.mgs"
+      - "solutions/**.mgs"
+      - "tools/**"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install magmascript
+        run: pip install magmascript
+
+      - name: Run every lesson
+        run: python tools/check.py --verbose
