@@ -2,7 +2,7 @@
 
 Learn C memory management without segfaults.
 
-`crunch-c` teaches C concepts — pointers, structs, memory allocation, overflow — using [magmascript](https://github.com/magmacrunchmedia/magmascript)'s asthenosphere. Every memory error is caught and explained. No segfaults. No undefined behavior. Just C's behavior, narrated.
+`crunch-c` teaches C concepts (pointers, structs, memory allocation, overflow) using [magmascript](https://github.com/magmacrunchmedia/magmascript)'s asthenosphere. Every memory error is caught and explained. No segfaults. No undefined behavior. Just C's behavior, narrated.
 
 ## What You'll Learn
 
@@ -44,7 +44,7 @@ quicksand: tried to read scorched memory at line 12
   block was scorched at line 8
 ```
 
-You learn what C does — and why it's dangerous — without the danger.
+You learn what C does, and why it's dangerous, without the danger.
 
 ## Playground
 
