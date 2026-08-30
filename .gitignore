@@ -12,3 +12,6 @@ venv/
 # macOS AppleDouble sidecars, from syncing this repo through a Mac.
 ._*
 .DS_Store
+
+# Visual Studio local cache.
+.vs/
