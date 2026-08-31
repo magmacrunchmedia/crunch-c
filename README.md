@@ -2,7 +2,7 @@
 
 Learn C memory management without segfaults.
 
-`crunch-c` teaches C concepts (pointers, structs, memory allocation, overflow) using [magmascript](https://github.com/magmacrunchmedia/magmascript)'s asthenosphere. Every memory error is caught and explained. No segfaults. No undefined behavior. Just C's behavior, narrated.
+`crunch-c` teaches C concepts (pointers, structs, memory allocation, overflow) using [magmascript](https://github.com/magmacrunch-media/magmascript)'s asthenosphere. Every memory error is caught and explained. No segfaults. No undefined behavior. Just C's behavior, narrated.
 
 ## What You'll Learn
 
@@ -56,7 +56,7 @@ nobody turns them on for you.
 
 ```bash
 pip install magmascript
-git clone https://github.com/magmacrunchmedia/crunch-c.git
+git clone https://github.com/magmacrunch-media/crunch-c.git
 cd crunch-c
 magmascript repl
 ```
